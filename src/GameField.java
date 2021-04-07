@@ -5,17 +5,21 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.Random;
+import java.io.*;
+import java.util.Scanner;
 
 public class GameField extends JPanel implements ActionListener
 {
-    private final int SIZE = 320;
-    private final int CELL_SIZE = 10;
+    private final int SIZE = 640;
+    private final int CELL_SIZE = 20;
     private final int ALL_DOTS = 400;
     private Image iconApp;
     private Image body;
     private Image food;
+    private int score = 0;
     private int foodX;
     private int foodY;
+    private int record;
     private int[] x = new int[ALL_DOTS];
     private int[] y = new int[ALL_DOTS];
     private int dots;
@@ -31,6 +35,7 @@ public class GameField extends JPanel implements ActionListener
     public GameField()
     {
 
+
         setBackground(Color.black);
         loadImages();
         initGame();
@@ -38,17 +43,18 @@ public class GameField extends JPanel implements ActionListener
         setFocusable(true);
     }
 
+    // public drawFrame()
+
     public void initGame()
     {
         dots = 3;
         for (int i = 0; i < dots; i++)
         {
-            x[i] = 50 - i * CELL_SIZE;
-            y[i] = 50;
+            x[i] = 40 - i * CELL_SIZE;
+            y[i] = 40;
         }
         timer = new Timer(timePlus, this);
         timer.start();
-        createFood();
     }
 
     public void createFood()
@@ -78,20 +84,78 @@ public class GameField extends JPanel implements ActionListener
             g.drawImage(food, foodX, foodY, this);
             for (int i = 0; i < dots; i++)
                 g.drawImage(body, x[i], y[i], this);
-//            for (int x = 0; x <= 320; x += 10)
-//                for (int y = 0; y <= 347; y += 10)
-//                {
-//                    g.setColor(Color.white);
-//                    g.drawRect(x, y, 10, 10);
-//                }
+
+            String strScore = Integer.toString(score);
+            String str = "Score: ";
+
+            g.setColor(Color.white);
+            g.drawString(str + strScore, 5, 10);
+
+
+
+           for (int x = 0; x <= 640; x += 20)
+               for (int y = 0; y <= 667; y += 20)
+               {
+                   g.setColor(Color.gray);
+                   g.drawRect(x, y, 20, 20);
+               }
         }
         else
         {
-            String str = "Game over";
-           // Font f = new Font("Arial", 14, Font.BOLD);
+            FileReader rec;
+            try
+            {
+                rec = new FileReader("../save/best_score");
+                Scanner scan = new Scanner(rec);
+                if (scan.hasNextInt())
+                    record = scan.nextInt();
+            }
+            catch (IOException ex)
+            {
+                System.out.println(ex.getMessage());
+            }
+            finally
+            {
+                // try
+                // {
+                //     rec.close();
+                // }
+                // catch (IOException ex)
+                // {
+                //     System.out.println(ex.getMessage());
+                // }
+            }
+            if (record < score)
+            {
+                record = score;
+                FileWriter w;
+                try
+                {
+                    w = new FileWriter("../save/best_score");
+                    String strScore = Integer.toString(score);
+                    w.write(strScore);
+                    w.flush();
+                }
+                catch (IOException ex)
+                {
+                    System.out.println(ex.getMessage());
+                }
+
+            }
+            JButton button = new JButton("Обычная кнопка");
+
+            String GameOver = "Game over";
+            String BestResult = "best result: ";
+            String strRecord= Integer.toString(record);
+
+            Font go = new Font("Arial", Font.BOLD, 45);
             g.setColor(Color.white);
-           // g.setFont(f);
-            g.drawString(str, 125, SIZE / 2);
+            g.setFont(go);
+            g.drawString(GameOver, 190, SIZE / 2);
+
+            Font br = new Font("Arial", Font.BOLD, 20);
+            g.setFont(br);
+            g.drawString(BestResult + strRecord, 230, 400);
         }
     }
 
@@ -117,6 +181,7 @@ public class GameField extends JPanel implements ActionListener
         if (x[0] == foodX && y[0] == foodY)
         {
             dots++;
+            score += 10;
             timePlus -= 3;
             timer.stop();
             timer = new Timer(timePlus, this);

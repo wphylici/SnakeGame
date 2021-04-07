@@ -1,20 +1,18 @@
 import javax.swing.*;
 import java.awt.*;
-import javax.imageio.ImageIO;
-import java.io.File;
-import java.io.IOException;
+import javax.swing.JInternalFrame;
 
 public class Window extends JFrame
 {
+    static JFrame f;
+
+    static JLabel l;
     public Window()
     {
-
-//        this.setIconImage(new ImageIcon(getClass().getResource("../images/SnakeIconApp.png")).getImage());
-
-//        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("../images/SnakeIconApp.png")));
         setTitle("Snake");
+
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setSize(320, 347);
+        setSize(640, 667);
         setLocation(400, 400);
         add(new GameField());
         setVisible(true);
