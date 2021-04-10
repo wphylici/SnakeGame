@@ -7,6 +7,7 @@ import java.awt.event.KeyEvent;
 import java.util.Random;
 import java.io.*;
 import java.util.Scanner;
+import java.awt.SplashScreen;
 
 public class GameField extends JPanel implements ActionListener
 {
@@ -34,13 +35,108 @@ public class GameField extends JPanel implements ActionListener
 
     public GameField()
     {
-
-
+//        forPanel s = new forPanel();
         setBackground(Color.black);
         loadImages();
         initGame();
         addKeyListener(new FieldKeyListener());
         setFocusable(true);
+    }
+
+//    public class forPanel extends JPanel
+//    {
+//        forPanel()
+//        {
+//
+//        }
+    @Override
+    protected void paintComponent(Graphics g)
+    {
+        super.paintComponent(g);
+        if (inGame)
+        {
+            g.drawImage(food, foodX, foodY, this);
+            for (int i = 0; i < dots; i++)
+                g.drawImage(body, x[i], y[i], this);
+
+            String strScore = Integer.toString(score);
+            String str = "Score: ";
+
+            g.setColor(Color.white);
+            g.drawString(str + strScore, 5, 10);
+
+
+
+            for (int x = 0; x <= 640; x += 20)
+                for (int y = 0; y <= 667; y += 20)
+                {
+                    g.setColor(Color.gray);
+                    g.drawRect(x, y, 20, 20);
+                }
+        }
+        else
+        {
+            FileReader rec;
+            try
+            {
+                rec = new FileReader("../save/best_score");
+                Scanner scan = new Scanner(rec);
+                if (scan.hasNextInt())
+                    record = scan.nextInt();
+                rec.close();
+            }
+            catch (IOException ex)
+            {
+                System.out.println(ex.getMessage());
+            }
+            finally
+            {
+                // try
+                // {
+                //     rec.close();
+                // }
+                // catch (IOException ex)
+                // {
+                //     System.out.println(ex.getMessage());
+                // }
+            }
+            if (record < score)
+            {
+                record = score;
+                FileWriter w;
+                try
+                {
+                    w = new FileWriter("../save/best_score");
+                    String strScore = Integer.toString(score);
+                    w.write(strScore);
+                    w.flush();
+                    w.close();
+                }
+                catch (IOException ex)
+                {
+                    System.out.println(ex.getMessage());
+                }
+            }
+            String GameOver = "Game over";
+            String BestResult = "best result: ";
+            String strRecord= Integer.toString(record);
+
+            Font go = new Font("Arial", Font.BOLD, 45);
+            g.setColor(Color.white);
+            g.setFont(go);
+            g.drawString(GameOver, 200, SIZE / 2);
+
+            Font br = new Font("Arial", Font.BOLD, 20);
+            g.setFont(br);
+            g.drawString(BestResult + strRecord, 245, 400);
+
+            JPanel panel = new JPanel();
+            JButton retry = new JButton("Retry");
+            panel.add(retry);
+            panel.setVisible(true);
+            timer.stop();
+
+        }
     }
 
     // public drawFrame()
@@ -75,89 +171,7 @@ public class GameField extends JPanel implements ActionListener
         food = ifood.getImage();
     }
 
-    @Override
-    protected void paintComponent(Graphics g)
-    {
-        super.paintComponent(g);
-        if (inGame)
-        {
-            g.drawImage(food, foodX, foodY, this);
-            for (int i = 0; i < dots; i++)
-                g.drawImage(body, x[i], y[i], this);
 
-            String strScore = Integer.toString(score);
-            String str = "Score: ";
-
-            g.setColor(Color.white);
-            g.drawString(str + strScore, 5, 10);
-
-
-
-           for (int x = 0; x <= 640; x += 20)
-               for (int y = 0; y <= 667; y += 20)
-               {
-                   g.setColor(Color.gray);
-                   g.drawRect(x, y, 20, 20);
-               }
-        }
-        else
-        {
-            FileReader rec;
-            try
-            {
-                rec = new FileReader("../save/best_score");
-                Scanner scan = new Scanner(rec);
-                if (scan.hasNextInt())
-                    record = scan.nextInt();
-            }
-            catch (IOException ex)
-            {
-                System.out.println(ex.getMessage());
-            }
-            finally
-            {
-                // try
-                // {
-                //     rec.close();
-                // }
-                // catch (IOException ex)
-                // {
-                //     System.out.println(ex.getMessage());
-                // }
-            }
-            if (record < score)
-            {
-                record = score;
-                FileWriter w;
-                try
-                {
-                    w = new FileWriter("../save/best_score");
-                    String strScore = Integer.toString(score);
-                    w.write(strScore);
-                    w.flush();
-                }
-                catch (IOException ex)
-                {
-                    System.out.println(ex.getMessage());
-                }
-
-            }
-            JButton button = new JButton("Обычная кнопка");
-
-            String GameOver = "Game over";
-            String BestResult = "best result: ";
-            String strRecord= Integer.toString(record);
-
-            Font go = new Font("Arial", Font.BOLD, 45);
-            g.setColor(Color.white);
-            g.setFont(go);
-            g.drawString(GameOver, 190, SIZE / 2);
-
-            Font br = new Font("Arial", Font.BOLD, 20);
-            g.setFont(br);
-            g.drawString(BestResult + strRecord, 230, 400);
-        }
-    }
 
     public void move()
     {
@@ -182,7 +196,7 @@ public class GameField extends JPanel implements ActionListener
         {
             dots++;
             score += 10;
-            timePlus -= 3;
+            timePlus -= 2;
             timer.stop();
             timer = new Timer(timePlus, this);
             timer.start();
