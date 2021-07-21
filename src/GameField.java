@@ -7,10 +7,8 @@ import java.awt.event.KeyEvent;
 import java.util.Random;
 import java.io.*;
 import java.util.Scanner;
-import java.awt.SplashScreen;
 
-public class GameField extends JPanel implements ActionListener
-{
+public class GameField extends JPanel implements ActionListener {
     private final int SIZE = 640;
     private final int CELL_SIZE = 20;
     private final int ALL_DOTS = 400;
@@ -33,8 +31,7 @@ public class GameField extends JPanel implements ActionListener
     private boolean inGame = true;
     private Graphics g;
 
-    public GameField()
-    {
+    public GameField() {
 //        forPanel s = new forPanel();
         setBackground(Color.black);
         loadImages();
@@ -43,18 +40,10 @@ public class GameField extends JPanel implements ActionListener
         setFocusable(true);
     }
 
-//    public class forPanel extends JPanel
-//    {
-//        forPanel()
-//        {
-//
-//        }
     @Override
-    protected void paintComponent(Graphics g)
-    {
+    protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        if (inGame)
-        {
+        if (inGame) {
             g.drawImage(food, foodX, foodY, this);
             for (int i = 0; i < dots; i++)
                 g.drawImage(body, x[i], y[i], this);
@@ -65,55 +54,35 @@ public class GameField extends JPanel implements ActionListener
             g.setColor(Color.white);
             g.drawString(str + strScore, 5, 10);
 
-
-
             for (int x = 0; x <= 640; x += 20)
-                for (int y = 0; y <= 667; y += 20)
-                {
+                for (int y = 0; y <= 667; y += 20) {
                     g.setColor(Color.gray);
                     g.drawRect(x, y, 20, 20);
                 }
-        }
-        else
-        {
+        } else {
             FileReader rec;
-            try
-            {
+            try {
                 rec = new FileReader("../save/best_score");
                 Scanner scan = new Scanner(rec);
                 if (scan.hasNextInt())
                     record = scan.nextInt();
                 rec.close();
             }
-            catch (IOException ex)
-            {
+            catch (IOException ex) {
                 System.out.println(ex.getMessage());
             }
-            finally
-            {
-                // try
-                // {
-                //     rec.close();
-                // }
-                // catch (IOException ex)
-                // {
-                //     System.out.println(ex.getMessage());
-                // }
-            }
-            if (record < score)
-            {
+
+            if (record < score) {
                 record = score;
                 FileWriter w;
-                try
-                {
+                try {
                     w = new FileWriter("../save/best_score");
                     String strScore = Integer.toString(score);
                     w.write(strScore);
                     w.flush();
                     w.close();
                 }
-                catch (IOException ex)
-                {
+                catch (IOException ex) {
                     System.out.println(ex.getMessage());
                 }
             }
@@ -135,17 +104,12 @@ public class GameField extends JPanel implements ActionListener
             panel.add(retry);
             panel.setVisible(true);
             timer.stop();
-
         }
     }
 
-    // public drawFrame()
-
-    public void initGame()
-    {
+    public void initGame() {
         dots = 3;
-        for (int i = 0; i < dots; i++)
-        {
+        for (int i = 0; i < dots; i++) {
             x[i] = 40 - i * CELL_SIZE;
             y[i] = 40;
         }
@@ -153,14 +117,12 @@ public class GameField extends JPanel implements ActionListener
         timer.start();
     }
 
-    public void createFood()
-    {
+    public void createFood() {
         foodX = new Random().nextInt(20) * CELL_SIZE;
         foodY = new Random().nextInt(20) * CELL_SIZE;
     }
 
-    public void loadImages()
-    {
+    public void loadImages() {
         ImageIcon iapp = new ImageIcon("../images/SnakeIconGame.png");
         iconApp = iapp.getImage();
 
@@ -171,12 +133,8 @@ public class GameField extends JPanel implements ActionListener
         food = ifood.getImage();
     }
 
-
-
-    public void move()
-    {
-        for (int i = dots; i > 0; i--)
-        {
+    public void move() {
+        for (int i = dots; i > 0; i--) {
             x[i] = x[i - 1];
             y[i] = y[i - 1];
         }
@@ -190,10 +148,8 @@ public class GameField extends JPanel implements ActionListener
             y[0] += CELL_SIZE;
     }
 
-    public void checkFood()
-    {
-        if (x[0] == foodX && y[0] == foodY)
-        {
+    public void checkFood() {
+        if (x[0] == foodX && y[0] == foodY) {
             dots++;
             score += 10;
             timePlus -= 2;
@@ -204,10 +160,8 @@ public class GameField extends JPanel implements ActionListener
         }
     }
 
-    public void checkCollisions()
-    {
-        for (int i = dots; i > 0; i--)
-        {
+    public void checkCollisions() {
+        for (int i = dots; i > 0; i--) {
             if (i > 4 && x[0] == x[i] && y[0] == y[i])
                 inGame = false;
             else if (x[0] > SIZE || x[0] < 0 || y[0] > SIZE || y[0] < 0)
@@ -216,10 +170,8 @@ public class GameField extends JPanel implements ActionListener
     }
 
     @Override
-    public void actionPerformed(ActionEvent e)
-    {
-        if (inGame)
-        {
+    public void actionPerformed(ActionEvent e) {
+        if (inGame) {
             checkFood();
             checkCollisions();
             move();
@@ -227,37 +179,31 @@ public class GameField extends JPanel implements ActionListener
         repaint();
     }
 
-    class FieldKeyListener extends KeyAdapter
-    {
+    class FieldKeyListener extends KeyAdapter {
         @Override
-        public void keyPressed(KeyEvent e)
-        {
+        public void keyPressed(KeyEvent e) {
             super.keyPressed(e);
             int key = e.getKeyCode();
 
-            if (key == KeyEvent.VK_LEFT && !right)
-            {
+            if (key == KeyEvent.VK_LEFT && !right) {
                 left = true;
                 right = false;
                 up = false;
                 down = false;
             }
-            if (key == KeyEvent.VK_RIGHT && !left)
-            {
+            if (key == KeyEvent.VK_RIGHT && !left) {
                 right = true;
                 left = false;
                 up = false;
                 down = false;
             }
-            if (key == KeyEvent.VK_UP && !down)
-            {
+            if (key == KeyEvent.VK_UP && !down) {
                 up = true;
                 down = false;
                 right = false;
                 left = false;
             }
-            if (key == KeyEvent.VK_DOWN && !up)
-            {
+            if (key == KeyEvent.VK_DOWN && !up) {
                 down = true;
                 up = false;
                 right = false;

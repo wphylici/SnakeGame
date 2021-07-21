@@ -1,13 +1,9 @@
 import javax.swing.*;
-import java.awt.*;
 
-
-public class SnakeWindow extends JFrame
-{
+public class SnakeWindow extends JFrame {
     static public JFrame frame = new JFrame();
 
-    public void start()
-    {
+    public void start() {
         frame.setTitle("Snake");
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setSize(640, 667);
@@ -15,10 +11,9 @@ public class SnakeWindow extends JFrame
         frame.add(new GameField());
         frame.setVisible(true);
     }
-    public static void main(String[] args)
-    {
-        SnakeWindow w = new SnakeWindow();
 
+    public static void main(String[] args) {
+        SnakeWindow w = new SnakeWindow();
         w.start();
     }
 }
