@@ -32,7 +32,6 @@ public class GameField extends JPanel implements ActionListener {
     private Graphics g;
 
     public GameField() {
-//        forPanel s = new forPanel();
         setBackground(Color.black);
         loadImages();
         initGame();
